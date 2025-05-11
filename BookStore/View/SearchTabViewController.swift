@@ -19,16 +19,19 @@ final class SearchTabViewController: BaseViewController {
         return collectionView
     }()
     private var data: [BookData.Documents] = []
+    private let book = BookListViewModel()
     
-    let book = BookListViewModel()
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        bind()
+        //bind()
     }
     
     override func setUI() {
         super.setUI()
+        
+        searchBar.delegate = self
+        searchBar.placeholder = "책 이름을 입력해주세요."
         
         view.addSubview(searchBar)
         view.addSubview(resultCollectionView)
@@ -94,15 +97,22 @@ final class SearchTabViewController: BaseViewController {
         return section
     }
     
-    private func bind() {
+    private func bind(query: String) {
         // 데이터 바인딩
-        book.fetchBookList(query: "미움 받을 용기") { [weak self] books in
+        book.fetchBookList(query: query) { [weak self] result in
             guard let self else { return }
-            self.data = books
+            self.data = result
             DispatchQueue.main.async {
                 self.resultCollectionView.reloadData()
             }
         }
+    }
+}
+
+extension SearchTabViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text else { return }
+        bind(query: text)
     }
 }
 
