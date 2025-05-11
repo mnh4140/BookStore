@@ -48,16 +48,6 @@
 			path = BookStore;
 			sourceTree = "<group>";
 		};
-		EDEC16B22DD071750092A9F4 /* BookStoreTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BookStoreTests;
-			sourceTree = "<group>";
-		};
-		EDEC16BC2DD071760092A9F4 /* BookStoreUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BookStoreUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,8 +79,6 @@
 			isa = PBXGroup;
 			children = (
 				EDEC16982DD071730092A9F4 /* BookStore */,
-				EDEC16B22DD071750092A9F4 /* BookStoreTests */,
-				EDEC16BC2DD071760092A9F4 /* BookStoreUITests */,
 				EDEC16972DD071730092A9F4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -143,9 +131,6 @@
 			dependencies = (
 				EDEC16B12DD071750092A9F4 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				EDEC16B22DD071750092A9F4 /* BookStoreTests */,
-			);
 			name = BookStoreTests;
 			packageProductDependencies = (
 			);
@@ -165,9 +150,6 @@
 			);
 			dependencies = (
 				EDEC16BB2DD071760092A9F4 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				EDEC16BC2DD071760092A9F4 /* BookStoreUITests */,
 			);
 			name = BookStoreUITests;
 			packageProductDependencies = (
@@ -293,9 +275,9 @@
 				INFOPLIST_FILE = BookStore/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -320,9 +302,9 @@
 				INFOPLIST_FILE = BookStore/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
