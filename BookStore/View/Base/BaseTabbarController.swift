@@ -7,10 +7,11 @@
 
 import UIKit
 
-class BaseTabbarController: UIViewController {
+class BaseTabbarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setTabbBar()
     }
     
     func setTabbBar() {

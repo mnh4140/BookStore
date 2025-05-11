@@ -9,18 +9,19 @@ import UIKit
 
 final class TabbarController: BaseTabbarController {
     
+    let searchTabVC = SearchTabViewController()
+    let bookListVC = BookListViewController()
+    
     override func setTabbBar() {
         super.setTabbBar()
-        let movieIcon = UIImage(named: "movies")?.withRenderingMode(.alwaysOriginal)
-        let favoritesIcon = UIImage(named: "favorites")?.withRenderingMode(.alwaysOriginal)
         
-        movieListVC.tabBarItem = UITabBarItem(title: "영화 예매", image: movieIcon, tag: 0)
-        favoritesVC.tabBarItem = UITabBarItem(title: "찜 목록", image: favoritesIcon, tag: 1)
+        searchTabVC.tabBarItem = UITabBarItem(title: "검색 탭", image: UIImage(systemName: "magnifyingglass"), tag: 0)
+        bookListVC.tabBarItem = UITabBarItem(title: "담은 책 리스트 탭", image: UIImage(systemName: "book.closed.fill"), tag: 1)
         
         // 뷰컨트롤러를 탭바에 등록
         viewControllers = [
-            UINavigationController(rootViewController: movieListVC),
-            UINavigationController(rootViewController: favoritesVC)
+            UINavigationController(rootViewController: searchTabVC),
+            UINavigationController(rootViewController: bookListVC)
         ]
     }
 }
