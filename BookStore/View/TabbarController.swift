@@ -10,7 +10,7 @@ import UIKit
 final class TabbarController: BaseTabbarController {
     
     let searchTabVC = SearchTabViewController()
-    let bookListVC = BookListViewController()
+    let bookListVC = SaveBookListViewController()
     
     override func setTabbBar() {
         super.setTabbBar()

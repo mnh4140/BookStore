@@ -43,7 +43,7 @@ final class SearchTabViewController: BaseViewController {
         resultCollectionView.snp.makeConstraints { make in
             make.top.equalTo(self.searchBar.snp.bottom).offset(10)
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(10)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(100)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
     
@@ -143,7 +143,42 @@ extension SearchTabViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailVC = DetailBookViewController()
-        print("✅ 셀 선택됨: \(indexPath.row)")
+        
+//        detailVC.bookTitle.text = data[indexPath.item].title
+//        print(data[indexPath.item].title)
+//        detailVC.authors.text = data[indexPath.item].authors.joined(separator: ", ")
+//        detailVC.priceLabel.text = String(data[indexPath.item].price)
+//        
+//        let urlString = data[indexPath.item].thumbnail
+//        guard let url = URL(string: urlString) else { return }
+//        
+//        DispatchQueue.global().async {
+//            if let data = try? Data(contentsOf: url) {
+//                if let image = UIImage(data: data) {
+//                    DispatchQueue.main.sync {
+//                        detailVC.thumbnail.image = image
+//                    }
+//                }
+//            }
+//        }
+        detailVC.setBookData(data: data[indexPath.item])
+        detailVC.delegate = self
+//        print("셀 선택됨: \(indexPath.row)")
+//        print(data[indexPath.row].thumbnail)
+//        print(data[indexPath.row].contents)
         self.presentModal(detailVC)
+    }
+}
+
+extension SearchTabViewController: Alertable {
+    func makeAlert(bookTitle: String) {
+        let alert = UIAlertController(
+            title: "책 담기 완료",
+            message: "\(bookTitle) 책 담기 완료!",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
     }
 }

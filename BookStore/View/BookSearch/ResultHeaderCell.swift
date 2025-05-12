@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ResultHeaderCell: BaseCell {
+final class ResultHeaderCell: BaseCollectionViewCell {
     private let label: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 24, weight: .bold)
