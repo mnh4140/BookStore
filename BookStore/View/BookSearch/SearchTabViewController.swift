@@ -139,4 +139,11 @@ extension SearchTabViewController: UICollectionViewDataSource {
         }
         return UICollectionReusableView()
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let detailVC = DetailBookViewController()
+        print("✅ 셀 선택됨: \(indexPath.row)")
+        self.presentModal(detailVC)
+    }
 }
