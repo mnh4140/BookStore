@@ -11,21 +11,16 @@ final class SearchTabViewController: BaseViewController {
     private let searchBar = UISearchBar()
     private lazy var resultCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
-        collectionView.backgroundColor = .red
+        //collectionView.backgroundColor = .red
         collectionView.register(ResultCell.self, forCellWithReuseIdentifier: String(describing: ResultCell.self))
         collectionView.register(ResultHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: String(describing: ResultHeaderCell.self))
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.isHidden = true
         return collectionView
     }()
     private var data: [BookData.Documents] = []
     private let book = BookListViewModel()
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        //bind()
-    }
     
     override func setUI() {
         super.setUI()
@@ -104,6 +99,7 @@ final class SearchTabViewController: BaseViewController {
             self.data = result
             DispatchQueue.main.async {
                 self.resultCollectionView.reloadData()
+                self.resultCollectionView.isHidden = false
             }
         }
     }

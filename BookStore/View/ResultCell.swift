@@ -19,13 +19,12 @@ final class ResultCell: BaseCell {
     private let price = UILabel()
     
     override func setUI() {
-        contentView.backgroundColor = .green
+        //contentView.backgroundColor = .green
         contentView.addSubview(name)
     }
     
     override func setConstraints() {
         name.snp.makeConstraints { make in
-            //make.leading.equalToSuperview().offset(10)
             make.horizontalEdges.equalToSuperview().inset(8)
             make.centerY.equalToSuperview()
         }
