@@ -50,12 +50,14 @@ class DetailBookViewController: BaseViewController {
         cencelButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .bold)
         cencelButton.layer.cornerRadius = 30
         cencelButton.backgroundColor = .lightGray
+        cencelButton.addTarget(self, action: #selector(didTappedCencelButton), for: .touchUpInside)
         
         saveButton.setTitle("담기", for: .normal)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .bold)
         saveButton.layer.cornerRadius = 30
         saveButton.backgroundColor = .green
+        saveButton.addTarget(self, action: #selector(didTappedSaveButton), for: .touchUpInside)
     
         stackView.axis = .horizontal
         stackView.distribution = .fill
@@ -108,6 +110,15 @@ class DetailBookViewController: BaseViewController {
 //            make.trailing.equalToSuperview().inset(20)
 //            make.bottom.equalToSuperview().inset(10)
 //        }
+    }
+    @objc
+    private func didTappedCencelButton() {
+        self.dismissModal()
+    }
+    
+    @objc
+    private func didTappedSaveButton() {
+        self.dismissModal()
     }
 }
 
