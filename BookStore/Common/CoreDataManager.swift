@@ -82,22 +82,27 @@ class CoreDataManager {
     }
     
     // Delete 삭제
-    func delete(title: String) {
-        let fetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-        
-        do {
-            let result = try context.fetch(fetchRequest)
-            if let delete = result.first {
-                context.delete(delete)
-                saveContext()
-                print("\(title) 삭제 완료")
-            } else {
-                print("\(title) 해당 데이터 없음")
-            }
-        } catch {
-            print("삭제 에러 발생")
-        }
+//    func delete(title: String) {
+//        let fetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
+//        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
+//        
+//        do {
+//            let result = try context.fetch(fetchRequest)
+//            if let delete = result.first {
+//                context.delete(delete)
+//                saveContext()
+//                print("\(title) 삭제 완료")
+//            } else {
+//                print("\(title) 해당 데이터 없음")
+//            }
+//        } catch {
+//            print("삭제 에러 발생")
+//        }
+//    }
+    
+    func delete(data: BookEntity) {
+        context.delete(data)
+        saveContext()
     }
     
     func deleteAllBooks() {
