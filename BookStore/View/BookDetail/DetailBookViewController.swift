@@ -10,19 +10,16 @@ import UIKit
 import SnapKit
 
 class DetailBookViewController: BaseViewController {
-    private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 10
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(DetailBookCell.self, forCellWithReuseIdentifier: String(describing: DetailBookCell.self))
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = .cyan
-        return collectionView
-    }()
-    private let bookTitle = UILabel()
-    private let authors = UILabel()
+    let bookTitle = UILabel()
+    let authors = UILabel()
+    
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+    
+    let thumbnail = UIImageView()
+    let priceLabel = UILabel()
+    let detailLabel = UILabel()
+
     private let stackView = UIStackView()
     private let cencelButton = UIButton()
     private let saveButton = UIButton()
@@ -43,8 +40,31 @@ class DetailBookViewController: BaseViewController {
         authors.textAlignment = .center
         view.addSubview(authors)
         
-        view.addSubview(collectionView)
+        // 스크롤 영역
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
         
+        // 이미지
+        thumbnail.contentMode = .scaleAspectFit
+        thumbnail.clipsToBounds = true
+        thumbnail.image = UIImage(systemName: "book.fill")
+        contentView.addSubview(thumbnail)
+        
+        // 가격
+        priceLabel.text = "책 가격 30000원"
+        priceLabel.textColor = .black
+        priceLabel.font = .systemFont(ofSize: 20, weight: .regular)
+        priceLabel.textAlignment = .center
+        contentView.addSubview(priceLabel)
+        
+        // 상세 설명
+        detailLabel.text = ""
+        detailLabel.font = .systemFont(ofSize: 18, weight: .regular)
+        detailLabel.textColor = .black
+        detailLabel.numberOfLines = 0
+        contentView.addSubview(detailLabel)
+        
+        // 취소 버튼
         cencelButton.setTitle("X", for: .normal)
         cencelButton.setTitleColor(.white, for: .normal)
         cencelButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .bold)
@@ -52,6 +72,7 @@ class DetailBookViewController: BaseViewController {
         cencelButton.backgroundColor = .lightGray
         cencelButton.addTarget(self, action: #selector(didTappedCencelButton), for: .touchUpInside)
         
+        // 답기 버튼
         saveButton.setTitle("담기", for: .normal)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.titleLabel?.font = .systemFont(ofSize: 22, weight: .bold)
@@ -59,6 +80,7 @@ class DetailBookViewController: BaseViewController {
         saveButton.backgroundColor = .green
         saveButton.addTarget(self, action: #selector(didTappedSaveButton), for: .touchUpInside)
     
+        // 버튼 스택
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.spacing = 8
@@ -86,31 +108,47 @@ class DetailBookViewController: BaseViewController {
             make.centerX.equalToSuperview()
         }
         
-        collectionView.snp.makeConstraints { make in
-            make.top.equalTo(authors.snp.bottom).offset(8)
-            make.horizontalEdges.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(80)
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(authors.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(stackView.snp.top).offset(-12)
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView.contentLayoutGuide)
+            make.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
+        thumbnail.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.height.equalTo(400)
+            make.width.equalTo(300)
+        }
+        
+        priceLabel.snp.makeConstraints { make in
+            make.top.equalTo(thumbnail.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.centerX.equalToSuperview()
+        }
+        
+        detailLabel.snp.makeConstraints { make in
+            make.top.equalTo(priceLabel.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(20) // 중요: contentView의 바닥 고정
         }
         
         stackView.snp.makeConstraints { make in
             make.height.equalTo(60)
             make.horizontalEdges.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(10)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(16)
         }
         
         cencelButton.snp.makeConstraints { make in
             make.width.equalTo(saveButton).multipliedBy(1.0 / 3.0)
-//            make.height.equalTo(50)
-//            make.leading.equalToSuperview().offset(20)
-//            make.bottom.equalToSuperview().inset(10)
         }
-//        saveButton.snp.makeConstraints { make in
-//            make.height.equalTo(50)
-//            make.leading.equalTo(cencelButton.snp.trailing).offset(8)
-//            make.trailing.equalToSuperview().inset(20)
-//            make.bottom.equalToSuperview().inset(10)
-//        }
     }
+    
     @objc
     private func didTappedCencelButton() {
         self.dismissModal()
@@ -122,20 +160,8 @@ class DetailBookViewController: BaseViewController {
     }
 }
 
-extension DetailBookViewController: UICollectionViewDelegate {
     
-}
-
-extension DetailBookViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        1
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: DetailBookCell.self), for: indexPath) as? DetailBookCell else { return UICollectionViewCell() }
-        
-        return cell
     }
-    
-    
 }
