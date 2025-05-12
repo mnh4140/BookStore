@@ -7,6 +7,7 @@
 
 import UIKit
 
+// 모달 띄우기
 extension UIViewController {
     /// 어떤 뷰컨트롤러에서든 모달을 띄울 수 있는 공용 메서드
     func presentModal(_ viewController: UIViewController, style: UIModalPresentationStyle = .fullScreen, animated: Bool = true) {

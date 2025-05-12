@@ -11,8 +11,10 @@ import CoreData
 class CoreDataManager {
     static let shared = CoreDataManager(modelName: "BookStore")
     
+    // 코어데이터에서 추출한 데이터 저장하는 배열
     var bookEntityData: [BookEntity] = []
     
+    // 코어데이터 저장소
     let persistentContainer: NSPersistentContainer
     
     init(modelName: String) {
@@ -24,10 +26,12 @@ class CoreDataManager {
         }
     }
     
+    // 코어데이터 저장소 공간
     var context: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
     
+    // 코어데이터 저장하기
     func saveContext() {
         if context.hasChanges {
             do {
@@ -81,33 +85,16 @@ class CoreDataManager {
         }
     }
     
-    // Delete 삭제
-//    func delete(title: String) {
-//        let fetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
-//        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-//        
-//        do {
-//            let result = try context.fetch(fetchRequest)
-//            if let delete = result.first {
-//                context.delete(delete)
-//                saveContext()
-//                print("\(title) 삭제 완료")
-//            } else {
-//                print("\(title) 해당 데이터 없음")
-//            }
-//        } catch {
-//            print("삭제 에러 발생")
-//        }
-//    }
-    
+    // Delete 데이터 삭제
     func delete(data: BookEntity) {
         context.delete(data)
         saveContext()
     }
     
+    // 전체 데이터 삭제
     func deleteAllBooks() {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = BookEntity.fetchRequest()
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest) // 대량 데이터 삭제 시, 사용
 
         do {
             try context.execute(deleteRequest)

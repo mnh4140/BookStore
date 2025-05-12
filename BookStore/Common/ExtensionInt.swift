@@ -7,6 +7,7 @@
 
 import Foundation
 
+// 가격에 콤마 찍기
 extension Int {
     var formattedWithComma: String {
         let formatter = NumberFormatter()

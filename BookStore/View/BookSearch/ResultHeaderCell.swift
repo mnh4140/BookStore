@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// 헤더 설정
 final class ResultHeaderCell: BaseCollectionViewCell {
     private let label: UILabel = {
         let label = UILabel()
@@ -28,6 +29,7 @@ final class ResultHeaderCell: BaseCollectionViewCell {
         }
     }
     
+    // 셀 헤더 설정 함수
     func configure(text: String) {
         label.text = text
     }
