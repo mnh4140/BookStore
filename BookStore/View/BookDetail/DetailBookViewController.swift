@@ -24,6 +24,17 @@ class DetailBookViewController: BaseViewController {
     private let cencelButton = UIButton()
     private let saveButton = UIButton()
     
+    weak var delegate: Alertable?
+    var data: BookData.Documents?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        if let data = data {
+            updateUI(data: data)
+        }
+    }
+    
     override func setUI() {
         super.setUI()
         view.backgroundColor = .brown
@@ -156,12 +167,34 @@ class DetailBookViewController: BaseViewController {
     
     @objc
     private func didTappedSaveButton() {
-        self.dismissModal()
+        self.dismissModal() // 모달 창 내리기
+        
+        // 델리게이트, 알림창 띄우기
+        if let data = data {
+            CoreDataManager.shared.create(data: data)
+            CoreDataManager.shared.fetch()
+            delegate?.makeAlert(bookTitle: data.title)
+        }
     }
-}
-
     
+    func setBookData(data: BookData.Documents) {
+        self.data = data
     }
     
+    func updateUI(data: BookData.Documents) {
+        self.bookTitle.text = data.title
+        self.authors.text = data.authors.joined(separator: ",")
+        if let url = URL(string: data.thumbnail) {
+                DispatchQueue.global().async {
+                    if let imageData = try? Data(contentsOf: url),
+                       let image = UIImage(data: imageData) {
+                        DispatchQueue.main.async {
+                            self.thumbnail.image = image
+                        }
+                    }
+                }
+            }
+        priceLabel.text = "\(data.price.formattedWithComma)원"
+        detailLabel.text = data.contents
     }
 }
