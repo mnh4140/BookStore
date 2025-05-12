@@ -94,5 +94,17 @@ extension SaveBookListViewController: UITableViewDataSource {
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            // 1. CoreData 삭제
+            let data = CoreDataManager.shared.bookEntityData[indexPath.row]
+            CoreDataManager.shared.delete(data: data)
+            
+            // 2. 배열 업데이트
+            CoreDataManager.shared.bookEntityData.remove(at: indexPath.row)
+            
+            // 3. 테이블 뷰 갱신
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
 }
