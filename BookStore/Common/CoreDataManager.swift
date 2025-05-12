@@ -28,6 +28,30 @@ class CoreDataManager {
         return persistentContainer.viewContext
     }
     
+    func saveContext() {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
+    
+    // Create 쓰기
+    func create(data: BookData.Documents) {
+        let BookEntityData = BookEntity(context: context)
+        BookEntityData.title = data.title
+        BookEntityData.author = data.authors.joined(separator: ",")
+        BookEntityData.thumbnail = data.thumbnail
+        BookEntityData.price = Int64(data.price)
+        BookEntityData.content = data.contents
+        
+        saveContext()
+    }
+    
+    // Read 읽기
     func fetch() {
         let fetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
         
@@ -57,25 +81,35 @@ class CoreDataManager {
         }
     }
     
-    func create(data: BookData.Documents) {
-        let BookEntityData = BookEntity(context: context)
-        BookEntityData.title = data.title
-        BookEntityData.author = data.authors.joined(separator: ",")
-        BookEntityData.thumbnail = data.thumbnail
-        BookEntityData.price = Int64(data.price)
-        BookEntityData.content = data.contents
+    // Delete 삭제
+    func delete(title: String) {
+        let fetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
         
-        saveContext()
+        do {
+            let result = try context.fetch(fetchRequest)
+            if let delete = result.first {
+                context.delete(delete)
+                saveContext()
+                print("\(title) 삭제 완료")
+            } else {
+                print("\(title) 해당 데이터 없음")
+            }
+        } catch {
+            print("삭제 에러 발생")
+        }
     }
     
-    func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
+    func deleteAllBooks() {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = BookEntity.fetchRequest()
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+            print("모든 BookEntity 삭제 완료")
+        } catch {
+            print("전체 삭제 실패: \(error)")
         }
     }
 }
