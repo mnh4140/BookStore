@@ -30,7 +30,7 @@ final class ResultCell: BaseCollectionViewCell {
         price.font = .systemFont(ofSize: 18, weight: .medium)
         
         stackView.axis = .horizontal
-        stackView.spacing = 16
+        stackView.spacing = 4
         stackView.distribution = .fill
         [name, author, price].forEach {
             stackView.addArrangedSubview($0)
@@ -49,7 +49,7 @@ final class ResultCell: BaseCollectionViewCell {
         }
         
         author.snp.makeConstraints { make in
-            make.width.equalTo(price).multipliedBy(1.0 / 2.0)
+            make.width.equalTo(price).multipliedBy(1.0 / 1.0)
         }
     }
     

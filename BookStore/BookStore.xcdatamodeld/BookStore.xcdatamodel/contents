@@ -3,7 +3,7 @@
     <entity name="BookEntity" representedClassName="BookEntity" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="content" optional="YES" attributeType="String"/>
-        <attribute name="price" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="price" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thumbnail" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>

@@ -19,7 +19,7 @@ extension BookEntity {
     @NSManaged public var title: String?
     @NSManaged public var author: String?
     @NSManaged public var content: String?
-    @NSManaged public var price: Int32
+    @NSManaged public var price: Int64
     @NSManaged public var thumbnail: String?
 
 }

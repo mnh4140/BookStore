@@ -62,7 +62,7 @@ class CoreDataManager {
         BookEntityData.title = data.title
         BookEntityData.author = data.authors.joined(separator: ",")
         BookEntityData.thumbnail = data.thumbnail
-        BookEntityData.price = Int32(data.price)
+        BookEntityData.price = Int64(data.price)
         BookEntityData.content = data.contents
         
         saveContext()
