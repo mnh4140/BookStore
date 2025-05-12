@@ -20,8 +20,16 @@ class SaveBookListViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        self.navigationController?.isNavigationBarHidden = false
+        
         CoreDataManager.shared.fetch()
         tableView.reloadData()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setNavigationBar()
     }
     
     override func setUI() {
@@ -38,6 +46,29 @@ class SaveBookListViewController: BaseViewController {
             make.horizontalEdges.equalToSuperview().inset(16)
             make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
+    }
+    
+    private func setNavigationBar() {
+        let title = self.navigationItem.title
+        self.navigationItem.title = "담은책"
+        
+        let allDeleteButton = UIBarButtonItem(title: "  전체 삭제", style: .plain, target: self, action: #selector(allDeleteButton))
+        allDeleteButton.tintColor = UIColor.lightGray
+        self.navigationItem.leftBarButtonItem = allDeleteButton
+        
+        let addButton = UIBarButtonItem(title: "추가  ", style: .done, target: self, action: #selector(addButton))
+        addButton.tintColor = UIColor.green
+        self.navigationItem.rightBarButtonItem = addButton
+    }
+    
+    @objc
+    private func allDeleteButton() {
+        
+    }
+    
+    @objc
+    private func addButton() {
+        
     }
 }
 
