@@ -8,7 +8,7 @@
 import UIKit
 
 final class SearchTabViewController: BaseViewController {
-    private let searchBar = UISearchBar()
+    let searchBar = UISearchBar()
     private lazy var resultCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         //collectionView.backgroundColor = .red
@@ -143,29 +143,10 @@ extension SearchTabViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailVC = DetailBookViewController()
-        
-//        detailVC.bookTitle.text = data[indexPath.item].title
-//        print(data[indexPath.item].title)
-//        detailVC.authors.text = data[indexPath.item].authors.joined(separator: ", ")
-//        detailVC.priceLabel.text = String(data[indexPath.item].price)
-//        
-//        let urlString = data[indexPath.item].thumbnail
-//        guard let url = URL(string: urlString) else { return }
-//        
-//        DispatchQueue.global().async {
-//            if let data = try? Data(contentsOf: url) {
-//                if let image = UIImage(data: data) {
-//                    DispatchQueue.main.sync {
-//                        detailVC.thumbnail.image = image
-//                    }
-//                }
-//            }
-//        }
+
         detailVC.setBookData(data: data[indexPath.item])
         detailVC.delegate = self
-//        print("셀 선택됨: \(indexPath.row)")
-//        print(data[indexPath.row].thumbnail)
-//        print(data[indexPath.row].contents)
+        
         self.presentModal(detailVC)
     }
 }
