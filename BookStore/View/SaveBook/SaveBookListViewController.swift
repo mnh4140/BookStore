@@ -49,7 +49,6 @@ class SaveBookListViewController: BaseViewController {
     }
     
     private func setNavigationBar() {
-        let title = self.navigationItem.title
         self.navigationItem.title = "담은책"
         
         let allDeleteButton = UIBarButtonItem(title: "  전체 삭제", style: .plain, target: self, action: #selector(allDeleteButton))
@@ -63,7 +62,9 @@ class SaveBookListViewController: BaseViewController {
     
     @objc
     private func allDeleteButton() {
-        
+        CoreDataManager.shared.deleteAllBooks()
+        CoreDataManager.shared.fetch()
+        tableView.reloadData()
     }
     
     @objc
@@ -80,7 +81,6 @@ extension SaveBookListViewController: UITableViewDelegate {
 
 extension SaveBookListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(CoreDataManager.shared.bookEntityData.count)
         return CoreDataManager.shared.bookEntityData.count
     }
     
