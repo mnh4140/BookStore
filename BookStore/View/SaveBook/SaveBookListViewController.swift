@@ -69,7 +69,13 @@ class SaveBookListViewController: BaseViewController {
     
     @objc
     private func addButton() {
+        self.tabBarController?.selectedIndex = 0
         
+        // UIViewController는 tabBarController라는 프로퍼티를 기본으로 갖고 있음.
+        // 서치바에 접근하기 위해 다운캐스팅
+        if let tabBarVC = self.tabBarController as? TabbarController {
+            tabBarVC.searchTabVC.searchBar.becomeFirstResponder()
+        }
     }
 }
 
