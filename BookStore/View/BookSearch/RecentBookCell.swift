@@ -13,7 +13,7 @@ final class RecentBookCell: BaseCollectionViewCell {
     private let stackView = UIStackView() // 스택뷰
     
     override func setUI() {
-        contentView.backgroundColor = .green
+        //contentView.backgroundColor = .green
         
         // 썸네일
         thumbnail.image = UIImage(systemName: "book.fill")

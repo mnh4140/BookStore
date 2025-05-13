@@ -25,16 +25,30 @@ class DetailBookViewController: BaseViewController {
     private let saveButton = UIButton() // 담기 버튼
     
     weak var delegate: Alertable? // 델리게이트 패턴을 위한 변수
-    var data: BookData.Documents? //
+    var data: BookData.Documents? // 검색 결과 저장 변수
+    
+    var setWhatData: String? // 분기처리 용 변수
+    
+    // 최근 책 데이터 저장
+    var recentBookData: RecentBookEntity?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let data = data {
-            updateUI(data: data) // 검색 화면에서 받아온 데이터로 UI 업데이트
-            CoreDataManager.shared.createRecentBooks(data: data) // 최근 본 책 추가
+
+        // 분기 처리 : 최근 본 책 탭 or 검색 결과 탭
+        switch setWhatData {
+        case "recentBook":
+            if let data = recentBookData {
+                updateUIForRecentBook(data: data)
+            }
+        case "resultBook":
+            if let data = data {
+                updateUI(data: data) // 검색 화면에서 받아온 데이터로 UI 업데이트
+                CoreDataManager.shared.createRecentBooks(data: data) // 최근 본 책 추가
+            }
+        default:
+            return
         }
-        
-        
     }
     
     override func setUI() {
@@ -214,5 +228,29 @@ class DetailBookViewController: BaseViewController {
         }
         priceLabel.text = "\(data.price.formattedWithComma)원"
         detailLabel.text = data.contents
+    }
+    
+    // 최근 책 데이터 전달
+    func setRecentBookData(data: RecentBookEntity) {
+        self.recentBookData = data
+    }
+    
+    // 최근 책 데이터로 UI 값 업데이트
+    func updateUIForRecentBook(data: RecentBookEntity) {
+        self.bookTitle.text = data.title
+        self.authors.text = data.author
+        guard let thumbnail = data.thumbnail else { return }
+        if let url = URL(string: thumbnail) {
+            DispatchQueue.global().async {
+                if let imageData = try? Data(contentsOf: url),
+                   let image = UIImage(data: imageData) {
+                    DispatchQueue.main.async {
+                        self.thumbnail.image = image
+                    }
+                }
+            }
+        }
+        priceLabel.text = "\(data.price.formattedWithComma)원"
+        detailLabel.text = data.content
     }
 }

@@ -25,11 +25,14 @@ final class SearchTabViewController: BaseViewController {
     private var data: [BookData.Documents] = [] // 셀 데이터를 넣기 위한 데이터, API 통신해서 받아오는 데이터
     private let bookLiskViewModel = BookListViewModel() // ViewModel, API 통신 클래스
     
+    private var recentBookData: [RecentBookEntity] = [] // 최근 책 정보 저장
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // 최근 본 책 데이터 불러오기
         CoreDataManager.shared.fetchRecentBooks()
+        recentBookData = CoreDataManager.shared.recentBookEntityData
         resultCollectionView.reloadData()
     }
     
@@ -232,13 +235,32 @@ extension SearchTabViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailVC = DetailBookViewController()
-
-        // 책 상세 보기 화면에 데이터 전달
-        detailVC.setBookData(data: data[indexPath.item])
-        // 책 담기 알람을 띄우기 위해 델리게이드 적용
-        detailVC.delegate = self
         
-        self.presentModal(detailVC) // 모달 띄우기
+        switch indexPath.section {
+        case 0:
+            detailVC.setWhatData = "recentBook"
+            detailVC.setRecentBookData(data: recentBookData[indexPath.item])
+            self.presentModal(detailVC) // 모달 띄우기
+        case 1:
+            // 책 상세 보기 화면에 데이터 전달
+            detailVC.setWhatData = "resultBook"
+            detailVC.setBookData(data: data[indexPath.item])
+            // 책 담기 알람을 띄우기 위해 델리게이드 적용
+            detailVC.delegate = self
+            
+            self.presentModal(detailVC) // 모달 띄우기
+        default:
+            return
+        }
+        
+//        let detailVC = DetailBookViewController()
+
+//        // 책 상세 보기 화면에 데이터 전달
+//        detailVC.setBookData(data: data[indexPath.item])
+//        // 책 담기 알람을 띄우기 위해 델리게이드 적용
+//        detailVC.delegate = self
+//        
+//        self.presentModal(detailVC) // 모달 띄우기
     }
 }
 

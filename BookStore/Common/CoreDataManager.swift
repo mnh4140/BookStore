@@ -57,43 +57,43 @@ class CoreDataManager {
     }
     
     // 최근책 용
-//    public func createRecentBooks(data: BookData.Documents) {
-//        let recentBookData = RecentBookEntity(context: context)
-//        recentBookData.title = data.title
-//        recentBookData.thumbnail = data.thumbnail
-//        recentBookData.insertDate = Date()
-//        
-//        saveContext()
-//    }
+    //    public func createRecentBooks(data: BookData.Documents) {
+    //        let recentBookData = RecentBookEntity(context: context)
+    //        recentBookData.title = data.title
+    //        recentBookData.thumbnail = data.thumbnail
+    //        recentBookData.insertDate = Date()
+    //
+    //        saveContext()
+    //    }
     
     // 최근책 저장 - 기존 중복 데이터 삭제 후 새로 저장
-//    public func createRecentBooks(data: BookData.Documents) {
-//        let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
-//        
-//        // 중복 기준: 제목 + 썸네일
-//        fetchRequest.predicate = NSPredicate(format: "title == %@ AND thumbnail", data.title, data.thumbnail)
-//        fetchRequest.fetchLimit = 1
-//        
-//        do {
-//            // 1. 기존 중복 데이터가 있다면 삭제
-//            if let existing = try context.fetch(fetchRequest).first {
-//                context.delete(existing)
-//                print("기존 중복 데이터 삭제: \(existing.title ?? "제목 없음")")
-//            }
-//            
-//            // 2. 새로 저장
-//            let recentBookData = RecentBookEntity(context: context)
-//            recentBookData.title = data.title
-//            recentBookData.thumbnail = data.thumbnail
-//            recentBookData.insertDate = Date()
-//            
-//            saveContext()
-//            print("최근책 새로 저장: \(data.title)")
-//            
-//        } catch {
-//            print("최근책 저장 중 오류 발생: \(error)")
-//        }
-//    }
+    //    public func createRecentBooks(data: BookData.Documents) {
+    //        let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
+    //
+    //        // 중복 기준: 제목 + 썸네일
+    //        fetchRequest.predicate = NSPredicate(format: "title == %@ AND thumbnail", data.title, data.thumbnail)
+    //        fetchRequest.fetchLimit = 1
+    //
+    //        do {
+    //            // 1. 기존 중복 데이터가 있다면 삭제
+    //            if let existing = try context.fetch(fetchRequest).first {
+    //                context.delete(existing)
+    //                print("기존 중복 데이터 삭제: \(existing.title ?? "제목 없음")")
+    //            }
+    //
+    //            // 2. 새로 저장
+    //            let recentBookData = RecentBookEntity(context: context)
+    //            recentBookData.title = data.title
+    //            recentBookData.thumbnail = data.thumbnail
+    //            recentBookData.insertDate = Date()
+    //
+    //            saveContext()
+    //            print("최근책 새로 저장: \(data.title)")
+    //
+    //        } catch {
+    //            print("최근책 저장 중 오류 발생: \(error)")
+    //        }
+    //    }
     
     // 10개 이후로 오래된 데이터 제거
     public func createRecentBooks(data: BookData.Documents) {
@@ -102,34 +102,37 @@ class CoreDataManager {
         // 중복 확인 (제목 기준)
         fetchRequest.predicate = NSPredicate(format: "title == %@ AND thumbnail == %@", data.title, data.thumbnail)
         fetchRequest.fetchLimit = 1
-
+        
         do {
             // 중복된 책이 있다면 삭제
             if let existing = try context.fetch(fetchRequest).first {
                 context.delete(existing)
             }
-
+            
             // 새로운 책 저장
             let recentBook = RecentBookEntity(context: context)
             recentBook.title = data.title
             recentBook.thumbnail = data.thumbnail
             recentBook.insertDate = Date()
-
+            recentBook.author = data.authors.joined(separator: ",")
+            recentBook.price = Int64(data.price)
+            recentBook.content = data.contents
+            
             // 저장된 개수 확인 후 10개 초과하면 오래된 것 삭제
             let allFetch: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
             allFetch.sortDescriptors = [NSSortDescriptor(key: "insertDate", ascending: false)] // 최신순
             let allBooks = try context.fetch(allFetch)
-
+            
             if allBooks.count > 10 {
                 let booksToDelete = allBooks.suffix(from: 10) // 11번째 이후 오래된 것들
                 for book in booksToDelete {
                     context.delete(book)
                 }
             }
-
+            
             saveContext()
             print("최근 책 저장 완료. 최신 10개 유지")
-
+            
         } catch {
             print("최근 책 저장 오류")
         }
@@ -143,14 +146,14 @@ class CoreDataManager {
             bookEntityData = try self.context.fetch(fetchRequest)
             // 디버그
             print("저장된 책 목록:")
-                    for book in bookEntityData {
-                        let title = book.title ?? "제목 없음"
-                        let author = book.author ?? "저자 없음"
-                        let price = book.price
-                        let content = book.content ?? "내용 없음"
-                        let thumbnail = book.thumbnail ?? "썸네일 없음"
-                        
-                        print("""
+            for book in bookEntityData {
+                let title = book.title ?? "제목 없음"
+                let author = book.author ?? "저자 없음"
+                let price = book.price
+                let content = book.content ?? "내용 없음"
+                let thumbnail = book.thumbnail ?? "썸네일 없음"
+                
+                print("""
                         ------------------------
                         제목: \(title)
                         저자: \(author)
@@ -159,7 +162,7 @@ class CoreDataManager {
                         썸네일: \(thumbnail)
                         ------------------------
                         """)
-                    }
+            }
         } catch {
             print("저장된 책 목록 불러오기 실패")
         }
@@ -176,17 +179,17 @@ class CoreDataManager {
             recentBookEntityData = try self.context.fetch(fetchRequest)
             // 디버그
             print("저장된 책 목록:")
-                    for book in recentBookEntityData {
-                        let title = book.title ?? "제목 없음"
-                        let thumbnail = book.thumbnail ?? "썸네일 없음"
-                        
-                        print("""
+            for book in recentBookEntityData {
+                let title = book.title ?? "제목 없음"
+                let thumbnail = book.thumbnail ?? "썸네일 없음"
+                
+                print("""
                         ------------------------
                         제목: \(title)
                         썸네일: \(thumbnail)
                         ------------------------
                         """)
-                    }
+            }
         } catch {
             print("저장된 책 목록 불러오기 실패")
         }
@@ -202,7 +205,7 @@ class CoreDataManager {
     public func deleteAllBooks() {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = BookEntity.fetchRequest()
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest) // 대량 데이터 삭제 시, 사용
-
+        
         do {
             try context.execute(deleteRequest)
             try context.save()
