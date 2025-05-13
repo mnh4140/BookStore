@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		EDEC17022DD082640092A9F4 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EDEC17012DD082640092A9F4 /* SnapKit */; };
-		EDEC17DD2DD201940092A9F4 /* BookEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEC17DB2DD201940092A9F4 /* BookEntity+CoreDataClass.swift */; };
-		EDEC17DE2DD201940092A9F4 /* BookEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEC17DC2DD201940092A9F4 /* BookEntity+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,8 +31,6 @@
 		EDEC16962DD071730092A9F4 /* BookStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDEC16AF2DD071750092A9F4 /* BookStoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookStoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDEC16B92DD071760092A9F4 /* BookStoreUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookStoreUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EDEC17DB2DD201940092A9F4 /* BookEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		EDEC17DC2DD201940092A9F4 /* BookEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -87,8 +83,6 @@
 		EDEC168D2DD071730092A9F4 = {
 			isa = PBXGroup;
 			children = (
-				EDEC17DB2DD201940092A9F4 /* BookEntity+CoreDataClass.swift */,
-				EDEC17DC2DD201940092A9F4 /* BookEntity+CoreDataProperties.swift */,
 				EDEC16982DD071730092A9F4 /* BookStore */,
 				EDEC16972DD071730092A9F4 /* Products */,
 			);
@@ -246,8 +240,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EDEC17DD2DD201940092A9F4 /* BookEntity+CoreDataClass.swift in Sources */,
-				EDEC17DE2DD201940092A9F4 /* BookEntity+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
