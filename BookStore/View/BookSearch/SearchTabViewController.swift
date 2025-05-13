@@ -56,7 +56,7 @@ final class SearchTabViewController: BaseViewController {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
             switch sectionIndex {
             case 0: // 최근 책, 아직 미구현
-                return self.createDefaultLayout()
+                return self.createRecentBookListLayout()
             case 1: // 검색 결과
                 return self.createDefaultLayout()
             default:
@@ -64,6 +64,35 @@ final class SearchTabViewController: BaseViewController {
             }
         }
         return layout
+    }
+    
+    private func createRecentBookListLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(1)
+        )
+        
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.45),
+            heightDimension: .absolute(200)
+        )
+        
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        group.contentInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .groupPaging
+        
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
+
+        section.boundarySupplementaryItems = [header]
+        
+        return section
     }
     
     /// 컴포지셔널 레이아웃 생성 메소드
@@ -125,7 +154,9 @@ extension SearchTabViewController: UISearchBarDelegate {
 
 // MARK: - CollectionView 델리게이트, 데이터 소스
 extension SearchTabViewController: UICollectionViewDelegate {
-    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        2
+    }
 }
 
 extension SearchTabViewController: UICollectionViewDataSource {
