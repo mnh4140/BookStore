@@ -14,15 +14,24 @@ final class SearchTabViewController: BaseViewController {
     private lazy var resultCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         //collectionView.backgroundColor = .red
+        collectionView.register(RecentBookCell.self, forCellWithReuseIdentifier: String(describing: RecentBookCell.self))
         collectionView.register(ResultCell.self, forCellWithReuseIdentifier: String(describing: ResultCell.self))
         collectionView.register(ResultHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: String(describing: ResultHeaderCell.self))
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.isHidden = true
+        //collectionView.isHidden = true
         return collectionView
     }()
     private var data: [BookData.Documents] = [] // 셀 데이터를 넣기 위한 데이터, API 통신해서 받아오는 데이터
     private let bookLiskViewModel = BookListViewModel() // ViewModel, API 통신 클래스
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // 최근 본 책 데이터 불러오기
+        CoreDataManager.shared.fetchRecentBooks()
+        resultCollectionView.reloadData()
+    }
     
     override func setUI() {
         super.setUI()
@@ -75,15 +84,15 @@ final class SearchTabViewController: BaseViewController {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.45),
-            heightDimension: .absolute(200)
+            widthDimension: .fractionalWidth(0.35),
+            heightDimension: .absolute(140)
         )
         
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
+        //group.contentInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .groupPaging
+        section.orthogonalScrollingBehavior = .continuous
         
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
@@ -144,12 +153,12 @@ final class SearchTabViewController: BaseViewController {
 }
 
 enum Section: Int, CaseIterable {
-    case recentBook
+    case RecentBook
     case SearchBook
     
     var title: String {
         switch self {
-        case .recentBook: return "최근 본 책"
+        case .RecentBook: return "최근 본 책"
         case .SearchBook: return "검색 결과"
         }
     }
@@ -167,21 +176,41 @@ extension SearchTabViewController: UISearchBarDelegate {
 // MARK: - CollectionView 델리게이트, 데이터 소스
 extension SearchTabViewController: UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        2
+        return data.isEmpty ? 1 : 2 // 검색 하지 않으면 섹션 수 1
     }
 }
 
 extension SearchTabViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        data.count
+        switch section {
+        case 0:
+            return CoreDataManager.shared.recentBookEntityData.count
+        case 1:
+            return data.count
+        default:
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ResultCell.self), for: indexPath) as? ResultCell else { return .init() }
         
-        cell.configure(data: data[indexPath.row])
-        
-        return cell
+        switch Section(rawValue: indexPath.section) {
+        case .RecentBook:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: RecentBookCell.self), for: indexPath) as? RecentBookCell else { return .init() }
+            let data = CoreDataManager.shared.recentBookEntityData[indexPath.row]
+            
+            cell.configure(data: data)
+            
+            return cell
+        case .SearchBook:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ResultCell.self), for: indexPath) as? ResultCell else { return .init() }
+            
+            cell.configure(data: data[indexPath.row])
+            
+            return cell
+        default:
+            return .init()
+        }
     }
     
     // 헤더 설정
