@@ -14,9 +14,15 @@ struct BookData: Decodable {
 
 extension BookData {
     struct Meta: Decodable {
-        let is_end: Bool
-        let pageable_count: Int
-        let total_count: Int
+        let isEnd: Bool
+        let pageableCount: Int
+        let totalCount: Int
+        
+        enum CodingKeys: String, CodingKey {
+            case isEnd = "is_end"
+            case pageableCount = "pageable_count"
+            case totalCount = "total_count"
+        }
     }
 }
 
@@ -25,7 +31,6 @@ extension BookData {
         let authors: [String]
         let contents: String
         let price: Int
-        let sale_price: Int
         let title: String
         let thumbnail: String
     }
