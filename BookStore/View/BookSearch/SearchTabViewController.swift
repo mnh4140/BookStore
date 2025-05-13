@@ -143,6 +143,18 @@ final class SearchTabViewController: BaseViewController {
     }
 }
 
+enum Section: Int, CaseIterable {
+    case recentBook
+    case SearchBook
+    
+    var title: String {
+        switch self {
+        case .recentBook: return "최근 본 책"
+        case .SearchBook: return "검색 결과"
+        }
+    }
+}
+
 // MARK: -서치 바 델리게이트
 extension SearchTabViewController: UISearchBarDelegate {
     /// 검색 버튼 누르면 실행되는 메소드
@@ -178,7 +190,10 @@ extension SearchTabViewController: UICollectionViewDataSource {
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: String(describing: ResultHeaderCell.self), for: indexPath) as? ResultHeaderCell else {
                 return UICollectionReusableView()
             }
-            header.configure(text: "검색 결과")
+            
+            let section = Section.allCases[indexPath.section]
+            
+            header.configure(text: section.title)
             return header
         }
         return UICollectionReusableView()
