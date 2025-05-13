@@ -29,10 +29,12 @@ class DetailBookViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         if let data = data {
             updateUI(data: data) // 검색 화면에서 받아온 데이터로 UI 업데이트
+            CoreDataManager.shared.createRecentBooks(data: data) // 최근 본 책 추가
         }
+        
+        
     }
     
     override func setUI() {
@@ -201,15 +203,15 @@ class DetailBookViewController: BaseViewController {
         self.bookTitle.text = data.title
         self.authors.text = data.authors.joined(separator: ",")
         if let url = URL(string: data.thumbnail) {
-                DispatchQueue.global().async {
-                    if let imageData = try? Data(contentsOf: url),
-                       let image = UIImage(data: imageData) {
-                        DispatchQueue.main.async {
-                            self.thumbnail.image = image
-                        }
+            DispatchQueue.global().async {
+                if let imageData = try? Data(contentsOf: url),
+                   let image = UIImage(data: imageData) {
+                    DispatchQueue.main.async {
+                        self.thumbnail.image = image
                     }
                 }
             }
+        }
         priceLabel.text = "\(data.price.formattedWithComma)원"
         detailLabel.text = data.contents
     }
