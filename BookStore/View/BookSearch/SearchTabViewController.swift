@@ -189,7 +189,7 @@ final class SearchTabViewController: BaseViewController {
         // 데이터 바인딩
         // API 통신 후 데이터 가져오기
         // query 값으로 검색 데이터를 가져옴
-        bookLiskViewModel.fetchBookList(query: query, page: page) { [weak self] result in
+        bookLiskViewModel.fetchBookList(query: query, page: page) { [weak self] result, meta in
             guard let self else { return }
             
             // 분기처리: 페이지가 1이면 덮어쓰기, 아니면 이어 붙이기
@@ -198,6 +198,8 @@ final class SearchTabViewController: BaseViewController {
             } else {
                 self.data.append(contentsOf: result)
             }
+            
+            self.metaData = meta // 메타데이터 저장
             
             DispatchQueue.main.async {
                 self.resultCollectionView.reloadData() // 셀 새로고침
@@ -217,23 +219,17 @@ final class SearchTabViewController: BaseViewController {
         
         isLoadingMore = true // 중복 호출 방지
         
-        // 먼저 메타데이터 요청
-        bookLiskViewModel.fetchMetaData(query: text, page: self.page) { [weak self] meta in
+        // 디버그
+        print("요청 페이지 - page: \(self.page)")
+        
+        // 시간 텀을 두고 데이터 로드
+        // UI 작업을 위해 메인 스레드에서 작업 진행
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
             guard let self else { return }
             
-            // 새 메타데이터로 업데이트
-            self.metaData = meta
+            self.bind(query: text, page: self.page)
             
-            // 페이지 끝났으면 중단
-            if meta.isEnd {
-                print("마지막 페이지, 더 이상 로드하지 않음")
-                self.isLoadingMore = false
-                return
-            }
-            print("요청 페이지: \(page)")
-            // 약간의 시간차 두고 데이터 로드
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                self.bind(query: text, page: self.page)
+            if self.metaData?.isEnd == false {
                 self.page += 1
             }
         }
@@ -257,6 +253,7 @@ extension SearchTabViewController: UISearchBarDelegate {
     /// 검색 버튼 누르면 실행되는 메소드
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text else { return }
+                
         bind(query: text) // 검색어를 가지고 API 통신으로 데이터를 가져옴
     }
 }
