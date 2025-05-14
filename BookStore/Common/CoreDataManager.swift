@@ -46,54 +46,30 @@ class CoreDataManager {
     
     // MARK: - Create 쓰기
     public func create(data: BookData.Documents) {
-        let bookEntityData = BookEntity(context: context)
-        bookEntityData.title = data.title
-        bookEntityData.author = data.authors.joined(separator: ",")
-        bookEntityData.thumbnail = data.thumbnail
-        bookEntityData.price = Int64(data.price)
-        bookEntityData.content = data.contents
+        let fetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
+        
+        // 중복 확인 (제목 기준)
+        fetchRequest.predicate = NSPredicate(format: "title == %@ AND thumbnail == %@", data.title, data.thumbnail)
+        fetchRequest.fetchLimit = 1
+        
+        do {
+            // 중복된 책이 있다면 삭제
+            if let existing = try context.fetch(fetchRequest).first {
+                context.delete(existing)
+            }
+            
+            let bookEntityData = BookEntity(context: context)
+            bookEntityData.title = data.title
+            bookEntityData.author = data.authors.joined(separator: ",")
+            bookEntityData.thumbnail = data.thumbnail
+            bookEntityData.price = Int64(data.price)
+            bookEntityData.content = data.contents
+        } catch {
+            print("책 담기 저장 오류")
+        }
         
         saveContext()
     }
-    
-    // 최근책 용
-    //    public func createRecentBooks(data: BookData.Documents) {
-    //        let recentBookData = RecentBookEntity(context: context)
-    //        recentBookData.title = data.title
-    //        recentBookData.thumbnail = data.thumbnail
-    //        recentBookData.insertDate = Date()
-    //
-    //        saveContext()
-    //    }
-    
-    // 최근책 저장 - 기존 중복 데이터 삭제 후 새로 저장
-    //    public func createRecentBooks(data: BookData.Documents) {
-    //        let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
-    //
-    //        // 중복 기준: 제목 + 썸네일
-    //        fetchRequest.predicate = NSPredicate(format: "title == %@ AND thumbnail", data.title, data.thumbnail)
-    //        fetchRequest.fetchLimit = 1
-    //
-    //        do {
-    //            // 1. 기존 중복 데이터가 있다면 삭제
-    //            if let existing = try context.fetch(fetchRequest).first {
-    //                context.delete(existing)
-    //                print("기존 중복 데이터 삭제: \(existing.title ?? "제목 없음")")
-    //            }
-    //
-    //            // 2. 새로 저장
-    //            let recentBookData = RecentBookEntity(context: context)
-    //            recentBookData.title = data.title
-    //            recentBookData.thumbnail = data.thumbnail
-    //            recentBookData.insertDate = Date()
-    //
-    //            saveContext()
-    //            print("최근책 새로 저장: \(data.title)")
-    //
-    //        } catch {
-    //            print("최근책 저장 중 오류 발생: \(error)")
-    //        }
-    //    }
     
     // 10개 이후로 오래된 데이터 제거
     public func createRecentBooks(data: BookData.Documents) {
