@@ -9,6 +9,7 @@ import UIKit
 
 /// 검색 화면
 final class SearchTabViewController: BaseViewController {
+    // MARK: - UI property
     let searchBar = UISearchBar() // 검색 바
     // 검색 결과 나타내는 컬렉션 뷰
     private lazy var resultCollectionView: UICollectionView = {
@@ -20,13 +21,24 @@ final class SearchTabViewController: BaseViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         //collectionView.isHidden = true
+        collectionView.alwaysBounceVertical = true // 튕기는 느낌 설정
         return collectionView
     }()
+    
+    // MARK: - 카카오 API 데이터 관련 property
     private var data: [BookData.Documents] = [] // 셀 데이터를 넣기 위한 데이터, API 통신해서 받아오는 데이터
     private let bookLiskViewModel = BookListViewModel() // ViewModel, API 통신 클래스
     
+    // MARK: - 최근 본 책 property
     private var recentBookData: [RecentBookEntity] = [] // 최근 책 정보 저장
     
+    // MARK: - 무한 스크롤 property
+    private var metaData: BookData.Meta? // 메다데이터 저장
+    let pullUpThreshold: CGFloat = 60 // 스크롤 높이
+    private var isLoadingMore = false // 데이저 불러오는 상태 저장, 중복 불러오기 방지
+    var page = 2 // 다음 페이지 저장 변수, 값이 1씩 증가됨
+    
+    // MARK: - LifeCycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -36,6 +48,7 @@ final class SearchTabViewController: BaseViewController {
         resultCollectionView.reloadData()
     }
     
+    /// UI 설정 메소드
     override func setUI() {
         super.setUI()
         
@@ -46,6 +59,7 @@ final class SearchTabViewController: BaseViewController {
         view.addSubview(resultCollectionView)
     }
     
+    /// 제약 설정
     override func setConstraints() {
         super.setConstraints()
         
@@ -171,16 +185,56 @@ final class SearchTabViewController: BaseViewController {
     }
     
     /// 데이터 바인딩 메소드
-    private func bind(query: String) {
+    private func bind(query: String, size: Int = 10, page: Int = 1) {
         // 데이터 바인딩
         // API 통신 후 데이터 가져오기
         // query 값으로 검색 데이터를 가져옴
-        bookLiskViewModel.fetchBookList(query: query) { [weak self] result in
+        bookLiskViewModel.fetchBookList(query: query, page: page) { [weak self] result in
             guard let self else { return }
-            self.data = result // API 로 가져온 데이터를 data 변수에 저장
+            
+            // 분기처리: 페이지가 1이면 덮어쓰기, 아니면 이어 붙이기
+            if page == 1 {
+                self.data = result // API 로 가져온 데이터를 data 변수에 저장
+            } else {
+                self.data.append(contentsOf: result)
+            }
+            
             DispatchQueue.main.async {
                 self.resultCollectionView.reloadData() // 셀 새로고침
                 self.resultCollectionView.isHidden = false // 검색 결과 화면 보이기
+                self.isLoadingMore = false // UI 반영 후 해제
+            }
+        }
+    }
+    
+    private func loadData() {
+        
+        // 검색어가 있는지 확인
+        guard let text = searchBar.text else {
+            isLoadingMore = false
+            return
+        }
+        
+        isLoadingMore = true // 중복 호출 방지
+        
+        // 먼저 메타데이터 요청
+        bookLiskViewModel.fetchMetaData(query: text, page: self.page) { [weak self] meta in
+            guard let self else { return }
+            
+            // 새 메타데이터로 업데이트
+            self.metaData = meta
+            
+            // 페이지 끝났으면 중단
+            if meta.isEnd {
+                print("마지막 페이지, 더 이상 로드하지 않음")
+                self.isLoadingMore = false
+                return
+            }
+            print("요청 페이지: \(page)")
+            // 약간의 시간차 두고 데이터 로드
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                self.bind(query: text, page: self.page)
+                self.page += 1
             }
         }
     }
