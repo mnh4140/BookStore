@@ -67,10 +67,15 @@ final class SearchTabViewController: BaseViewController {
     private func createCompositionalLayout() -> UICollectionViewCompositionalLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
             switch sectionIndex {
-            case 0: // 최근 책, 아직 미구현
-                return self.createRecentBookListLayout()
+            case 0: // 최근 책
+                // 분기 처리: 최근 본 책이 없으면 헤더가 없는 레이아웃으로 변경
+                if CoreDataManager.shared.recentBookEntityData.count != 0 {
+                    return self.createRecentBookListLayout()
+                } else {
+                    return self.createDefaultLayout()
+                }
             case 1: // 검색 결과
-                return self.createDefaultLayout()
+                return self.createResultBookListLayout()
             default:
                 return self.createDefaultLayout()
             }
@@ -78,6 +83,7 @@ final class SearchTabViewController: BaseViewController {
         return layout
     }
     
+    /// 최근 본 책 레이아웃
     private func createRecentBookListLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
@@ -108,7 +114,7 @@ final class SearchTabViewController: BaseViewController {
     }
     
     /// 컴포지셔널 레이아웃 생성 메소드
-    private func createDefaultLayout() -> NSCollectionLayoutSection {
+    private func createResultBookListLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
             heightDimension: .fractionalHeight(1)
@@ -135,6 +141,31 @@ final class SearchTabViewController: BaseViewController {
                                                                  alignment: .top)
 
         section.boundarySupplementaryItems = [header]
+
+        return section
+    }
+    
+    /// 헤더가 없는 레이아웃
+    private func createDefaultLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(1)
+        )
+        
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        item.contentInsets = .init(top: 20, leading: 8, bottom: 0, trailing: 8)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .absolute(80)
+        )
+        
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        
+        section.contentInsets = .init(top: 4, leading: 0, bottom: 0, trailing: 0)
 
         return section
     }
@@ -252,15 +283,6 @@ extension SearchTabViewController: UICollectionViewDataSource {
         default:
             return
         }
-        
-//        let detailVC = DetailBookViewController()
-
-//        // 책 상세 보기 화면에 데이터 전달
-//        detailVC.setBookData(data: data[indexPath.item])
-//        // 책 담기 알람을 띄우기 위해 델리게이드 적용
-//        detailVC.delegate = self
-//        
-//        self.presentModal(detailVC) // 모달 띄우기
     }
 }
 
