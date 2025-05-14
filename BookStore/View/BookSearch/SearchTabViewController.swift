@@ -212,6 +212,27 @@ extension SearchTabViewController: UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return data.isEmpty ? 1 : 2 // 검색 하지 않으면 섹션 수 1
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // 스크롤 트리거 조건
+        guard scrollView.isDragging else { return }
+        
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let scrollViewHeight = scrollView.frame.size.height
+        
+        // 현재 스크롤 위치가 contentHeight를 넘어선 경우 → 아래로 더 끌어당긴 상황
+        let pullUpDistance = offsetY + scrollViewHeight - contentHeight
+        
+        if pullUpDistance > pullUpThreshold {
+            
+            if !isLoadingMore {
+                isLoadingMore = true
+                print("아래로 당겨서 리로드 시작")
+                loadData()
+            }
+        }
+    }
 }
 
 extension SearchTabViewController: UICollectionViewDataSource {
