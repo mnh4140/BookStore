@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EDEC17022DD082640092A9F4 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EDEC17012DD082640092A9F4 /* SnapKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		EDEC16B02DD071750092A9F4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -55,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDEC17022DD082640092A9F4 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +118,7 @@
 			);
 			name = BookStore;
 			packageProductDependencies = (
+				EDEC17012DD082640092A9F4 /* SnapKit */,
 			);
 			productName = BookStore;
 			productReference = EDEC16962DD071730092A9F4 /* BookStore.app */;
@@ -190,6 +196,9 @@
 			);
 			mainGroup = EDEC168D2DD071730092A9F4;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EDEC17002DD082640092A9F4 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EDEC16972DD071730092A9F4 /* Products */;
 			projectDirPath = "";
@@ -545,6 +554,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EDEC17002DD082640092A9F4 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EDEC17012DD082640092A9F4 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EDEC17002DD082640092A9F4 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EDEC168E2DD071730092A9F4 /* Project object */;
 }
