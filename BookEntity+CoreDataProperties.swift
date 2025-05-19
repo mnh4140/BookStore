@@ -2,7 +2,7 @@
 //  BookEntity+CoreDataProperties.swift
 //  BookStore
 //
-//  Created by NH on 5/12/25.
+//  Created by NH on 5/13/25.
 //
 //
 
@@ -16,11 +16,11 @@ extension BookEntity {
         return NSFetchRequest<BookEntity>(entityName: "BookEntity")
     }
 
-    @NSManaged public var title: String?
     @NSManaged public var author: String?
     @NSManaged public var content: String?
     @NSManaged public var price: Int64
     @NSManaged public var thumbnail: String?
+    @NSManaged public var title: String?
 
 }
 
