@@ -1,16 +1,16 @@
 //
-//  BaseCell.swift
+//  BaseTableViewCell.swift
 //  BookStore
 //
-//  Created by NH on 5/11/25.
+//  Created by NH on 5/12/25.
 //
 
 import UIKit
 
-class BaseCell: UICollectionViewCell {
+class BaseTableViewCell: UITableViewCell {
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setUI()
         setConstraints()
